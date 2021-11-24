@@ -1,0 +1,55 @@
+﻿@model QuizApp.ViewModel.AdminViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<style type="text/css">
+    fieldset {
+        font-family: sans-serif;
+        border: 3px solid #1F4970;
+        background: #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 100px;
+        margin-left: 250px;
+        margin-right: 250Px;
+    }
+
+        fieldset legend {
+            background: #1F4970;
+            color: #fff;
+            padding: 5Px 10Px 10Px 20Px;
+            font-size: 15Px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 5Px #ddd; 
+            margin-left: 10px;
+            margin-right: 10Px;
+        }
+
+</style>
+<section style="margin: 10Px;">
+    <fieldset style="min-height: 100px;">
+        <legend><b> Employee Login</b></legend>
+        @using (Html.BeginForm("Index", "Account", FormMethod.Post))
+            {
+
+    <div class="container">
+        @Html.ValidationSummary(true,null,new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(Model => Model.UserName)
+            @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserName, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(Model => Model.UserPassword)
+            @Html.TextBoxFor(model => model.UserPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.UserPassword, null, new { @class = "text-danger" })
+        </div>
+        <input type="submit" value="Login" class="btn btn-primary">
+    </div>
+
+            }
+    </fieldset>
+</section>

@@ -1,0 +1,65 @@
+﻿@model  QuizApp.ViewModel.QuizQuestionAnsweViewModel
+@{
+    ViewBag.Title = "QuizQuestionOption";
+}
+
+
+<style type="text/css">
+    fieldset {
+        font-family: sans-serif;
+        border: 3px solid #1F4970;
+        background: #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 100px;
+        margin-left: 250px;
+        margin-right: 250Px;
+    }
+
+        fieldset legend {
+            background: #1F4970;
+            color: #fff;
+            padding: 5Px 10Px 10Px 20Px;
+            font-size: 15Px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 5Px #ddd;
+            margin-left: 10px;
+            margin-right: 10Px;
+        }
+</style>
+@*@Html.HiddenFor(model => model.QuestionId,new { @id= "txtQuestionId" })*@
+
+@{ var questionId = Model.QuestionId;}
+<input type="hidden" name="QuestionId" id="txtQuestionId" value="@questionId" />
+
+<fieldset>
+    <legend>@Model.QuestionName</legend>
+    <table style="width:100%" class="table table-condensed" id="tblQuestionOption">
+
+        @foreach (var item in Model.ListofQuizOption)
+        {
+            <tr>
+                <td>
+               
+                    @Html.RadioButtonFor(model => model.OptionId, item.OptionName) @item.OptionName
+                    
+                </td>
+            </tr>
+
+        }
+        <tr>
+            <td>
+                @if (Model.IsLast)
+                {
+                    <input type="button" name="Save" value="Save" class="btn btn-success" id="btnSave" onclick="SaveCandidateAnswers()" />
+                }
+                else
+                {
+                    <input type="button" name="Next" value="Next" class="btn btn-primary" id="btNext" onclick="LoadQuestion()" />
+
+                }
+            </td>
+        </tr>
+    </table>
+</fieldset>
+

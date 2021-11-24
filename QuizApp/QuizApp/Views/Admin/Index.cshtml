@@ -1,0 +1,213 @@
+﻿@model QuizApp.ViewModel.CategoryViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+                $("#btnAddOptions").click(function () {
+
+                    AddOptionintoList();
+
+
+
+
+                });
+                $("#btnSave").click(function () {
+
+                    SaveOptionandOption();
+
+
+
+
+                });
+
+
+    });
+        
+
+            function SaveOptionandOption() {
+        if ($("#tblOptions tr").length !== 4) {
+
+            alert("option should not more and less than 4.");
+            return false;
+        }
+        var answerText = "";
+        var answerValid = undefined;
+        $.each($("#tblOptions tr"), function () {
+
+            answerText = $(this).find("td:eq(0) input[type=radio]:checked").val();
+            if (answerText !== undefined) {
+                answerValid = answerText;
+            }
+
+        });
+
+        if (answerValid === undefined) {
+            alert("please Select the Answer.");
+            return false;
+
+        }
+      
+        var ListOfOptions = [];
+        var answerTextData = "";
+        var QuestionOption = {};
+        var OptionText = "";
+
+        $.each($("#tblOptions tr"), function () {
+
+            answerText = $(this).find("td:eq(0) input[type=radio]:checked").val();
+            OptionText = $(this).find("td:eq(0) input[type=radio]").val();
+            if (answerText !== undefined) {
+                answerTextData = answerText;
+            }
+            ListOfOptions.push(OptionText);
+
+        });
+
+        QuestionOption.ListOfOptions = ListOfOptions;
+        QuestionOption.AnswerText = answerTextData;
+        QuestionOption.QuestionName = $("#textQuestionName").val();
+
+        QuestionOption.CategoryId = $("#ddCategoryId").val();
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(QuestionOption),
+            URL: 'Admin/Index',
+            contentType:'application/json; charset=utf-8',
+            success: function (data) {
+                if (data.success === true) {
+
+                    alert(data.message);
+                    $("#textQuestionName").val("");
+                    $("#textQuestionName").focus();
+                    $("#textoptionName").val("");
+                    $("#tblOptions tr").remove();
+                    $("#ddCategoryId").val(1);
+
+                 
+
+                }
+                else {
+                    alert(data.message);
+                }
+                },
+           
+            error: function () {
+
+                alert("There is some problem to process your request.");
+            }
+        });
+
+    }
+
+    function AddOptionintoList() {
+
+       // textoptionName
+        //tblOptions
+
+
+        if ($("#textQuestionName").val() == "") {
+
+            alert("Question  should not be empty.");
+            $("#textQuestionName").focus();
+            return false;
+        }
+        if ($("#textoptionName").val() == "") {
+
+            alert("option name should not be empty.");
+            $("#textoptionName").focus();
+            return false;
+ }
+
+        if ($("#tblOptions tr").length === 4) {
+            $("#textoptionName").focus();
+            $("#textoptionName").val("");
+
+            alert("option should not more then 4");
+          
+
+
+            return false;
+        }
+        var isSuccess = false;
+        $.each($("#tblOptions tr"), function () {
+            var listedvalue = $(this).find("td:eq(0) input[type=radio]").val();
+            if (listedvalue === $("#textoptionName").val()) {
+                $("#textoptionName").focus();
+                $("#textoptionName").val("");
+
+                alert("Its already exist.");
+                isSuccess = true;
+
+
+            }
+
+        }
+        );
+
+      
+        if (isSuccess === true) {
+
+            return false;
+
+        }
+        var optionName = $("#textoptionName").val();
+        var rowadded = "<tr><td> <input type='radio'  value=" +
+            optionName +
+            " name='optionName'/> " +
+            optionName +
+            " </td ></tr > ";
+        $("#tblOptions").append(rowadded);
+
+        $("#textoptionName").focus();
+        $("#textoptionName").val('');
+
+    }
+</script>
+
+<br>
+<br>
+
+@using (Html.BeginForm("Index", "Admin", FormMethod.Post))
+{
+
+<div class="container">
+    @Html.ValidationSummary(true, null, new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.CategoryId)
+        @Html.DropDownListFor(Model => Model.CategoryId, Model.ListofCategory, new { @class = "form-control", @id = "ddCategoryId" })
+
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.QuestionName)
+        @Html.TextAreaFor(model => model.QuestionName, new { @class = "form-control", @id = "textQuestionName" })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(Model => Model.OptionName)
+        @Html.TextAreaFor(model => model.OptionName, new { @class = "form-control", @id = "textoptionName" })
+
+
+    </div>
+    <div class="form-group">
+        <input id="btnAddOptions" type="button" class="btn btn-default" name="Option" value="Add Options">
+    </div>
+
+</div>
+}
+<table id="tblOptions" class="table table-condensed" style="width:100%"></table>
+<div class="container">
+    <input id="btnSave" type="button" class="btn btn-default" name="Save" value="Save">
+</div>
+
